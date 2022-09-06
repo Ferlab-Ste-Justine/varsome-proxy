@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  proxy:
+    image: node:18.4-slim
+    working_dir: /home/node/varsome-proxy
+    user: node
+    command: tail -f /dev/null
+    ports:
+      - ${PROXY_PORT}:3000
+    volumes:
+      - ..:/home/node/varsome-proxy
+
+  postgres:
+    image: postgres:14.5-alpine
+    ports:
+      - ${POSTGRES_PORT}:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+
+volumes:
+  postgres-data:
