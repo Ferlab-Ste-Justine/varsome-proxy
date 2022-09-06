@@ -1,4 +1,4 @@
-# Proxy
+# Varsome Proxy
 
 HTTP proxy that limits Varsome API data consumption.
 
