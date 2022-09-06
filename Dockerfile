@@ -1,6 +1,6 @@
-ARG image=node:18.4-alpine
+ARG image=node:18.4
 
-FROM $image AS build
+FROM $image-slim AS build
 
 COPY src ./src
 COPY .eslintrc.json ./
@@ -15,7 +15,7 @@ RUN npm run lint:ci
 RUN npm run test:ci
 RUN npm run build
 
-FROM $image
+FROM $image-alpine
 
 COPY --from=build /dist ./dist
 COPY --from=build /package-lock.json ./
