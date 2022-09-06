@@ -1,0 +1,10 @@
+{
+  "preset": "ts-jest",
+  "testEnvironment": "node",
+  "moduleDirectories": ["node_modules", "src"],
+  "testMatch": ["**/*.test.ts"],
+  "collectCoverage": false,
+  "coverageDirectory": "coverage",
+  "coverageReporters": ["lcov", "text"],
+  "coveragePathIgnorePatterns": ["<rootDir>/src/config"]
+}

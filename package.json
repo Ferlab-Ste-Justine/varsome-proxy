@@ -1,0 +1,56 @@
+{
+  "name": "proxy",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "ts-node-dev -r tsconfig-paths/register src",
+    "lint": "eslint src --ext .ts --fix",
+    "lint:ci": "eslint src --ext .ts",
+    "test": "jest --verbose",
+    "test:cov": "jest --verbose --coverage",
+    "test:ci": "jest",
+    "migration": "ts-node -r tsconfig-paths/register src/cmd/migration latest",
+    "migration:up": "ts-node -r tsconfig-paths/register src/cmd/migration up",
+    "migration:down": "ts-node -r tsconfig-paths/register src/cmd/migration down",
+    "migration:rollback": "ts-node -r tsconfig-paths/register src/cmd/migration rollback",
+    "migration:list": "ts-node -r tsconfig-paths/register src/cmd/migration list",
+    "migration:make": "ts-node -r tsconfig-paths/register src/cmd/migration make",
+    "reset": "ts-node -r tsconfig-paths/register src/cmd/reset",
+    "build": "tsc --project tsconfig.build.json"
+  },
+  "engines": {
+    "node": "18.4"
+  },
+  "dependencies": {
+    "bytes": "^3.1.0",
+    "dotenv": "^16.0.0",
+    "http-proxy": "^1.18.0",
+    "knex": "^2.0.0",
+    "parse-duration": "^1.0.0",
+    "pg": "^8.7.0"
+  },
+  "devDependencies": {
+    "@types/bytes": "^3.1.0",
+    "@types/http-proxy": "^1.17.0",
+    "@types/jest": "^28.0.0",
+    "@types/node": "^18.7.0",
+    "@types/pg": "^8.6.0",
+    "@types/sqlite3": "^3.1.0",
+    "@types/supertest": "^2.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.23.0",
+    "@typescript-eslint/parser": "^5.23.0",
+    "eslint": "^8.23.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^27.0.0",
+    "jest": "^28.0.0",
+    "sqlite3": "^5.0.0",
+    "supertest": "^6.2.0",
+    "ts-jest": "^28.0.0",
+    "ts-node": "^10.9.0",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "4.0.0",
+    "typescript": "^4.8.0"
+  }
+}

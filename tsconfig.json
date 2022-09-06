@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "esnext",
+    "baseUrl": "src",
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "removeComments": true,
+    "skipLibCheck": true,
+    "strict": true
+  },
+  "include": ["src"]
+}
