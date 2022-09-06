@@ -1,6 +1,6 @@
 # Proxy
 
-HTTP proxy that limits data consumption.
+HTTP proxy that limits Varsome API data consumption.
 
 ## Setup
 
