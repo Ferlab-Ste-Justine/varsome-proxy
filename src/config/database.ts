@@ -26,10 +26,12 @@ export default config.env === Env.test
     pool: { min: 2, max: 10 },
   };
 
-export const tableName = String(process.env.DATABASE_TABLE);
+export const table = String(process.env.DATABASE_TABLE);
+
+export const tableName = (name: string) => `${table}_${name}`;
 
 export const migrationConfig = {
-  tableName: `${tableName}_migration`,
+  tableName: `${tableName('migration')}`,
   directory: `${config.path}/migration`,
   extension: config.ext,
   stub: 'migration.stub',
