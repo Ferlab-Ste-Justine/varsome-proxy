@@ -7,12 +7,10 @@ const json = (bytes: number) => {
   return JSON.stringify({ x: 'y'.repeat(length - min) });
 };
 
-const server = http.createServer((req, res) => {
+export default http.createServer((req, res) => {
   const params = url.parse(String(req.url), true).query;
   const bytes = Number(params.bytes);
   const status = Number(params.status);
   res.writeHead(status || 200, { 'content-type': 'application/json' });
   res.end(json(bytes));
 });
-
-export default server;

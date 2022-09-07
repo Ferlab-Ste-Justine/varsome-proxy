@@ -18,49 +18,63 @@ beforeAll(async () => {
 afterAll(async () => {
   proxy.stop();
   testServer.close();
+  await db.migrate.rollback(migrationConfig);
   await db.destroy();
 });
 
-describe(`Making a request with ${config.dataLimit}b data response`, () => {
+describe(`Making a request with a ${config.bytesLimit}b response`, () => {
   test('Response status is 200', async () => {
-    response = await server.get(`?bytes=${config.dataLimit}`);
+    response = await server.get(`?bytes=${config.bytesLimit}`);
     expect(response.status).toBe(200);
   });
-  test('Data consumed is 0b', async () => {
-    expect(proxy.getDataConsumed()).toBe(0);
+  test('Bytes consumed is 0b', async () => {
+    expect(proxy.getBytesConsumed()).toBe(0);
   });
-  test(`Data pending is ${config.dataLimit}b`, async () => {
-    expect(proxy.getDataPending()).toBe(config.dataLimit);
+  test(`Bytes pending is ${config.bytesLimit}b`, async () => {
+    expect(proxy.getBytesPending()).toBe(config.bytesLimit);
   });
-  test(`After sync, data consumed is ${config.dataLimit}b`, async () => {
+  test(`After sync, bytes consumed is ${config.bytesLimit}b`, async () => {
     await proxy.sync();
-    expect(proxy.getDataConsumed()).toBe(config.dataLimit);
+    expect(proxy.getBytesConsumed()).toBe(config.bytesLimit);
   });
-  test('After sync, data pending is 0b', async () => {
-    expect(proxy.getDataPending()).toBe(0);
+  test('After sync, bytes pending is 0b', async () => {
+    expect(proxy.getBytesPending()).toBe(0);
   });
-  test('After reset, data consumed is 0b', async () => {
-    await proxy.reset();
-    expect(proxy.getDataConsumed()).toBe(0);
+  test(`After sync, bytes monthly is ${config.bytesLimit}b`, async () => {
+    await proxy.sync();
+    expect(await proxy.getBytesMonthly()).toBe(config.bytesLimit);
+  });
+  test(`After sync, bytes daily is ${config.bytesLimit}b`, async () => {
+    expect(await proxy.getBytesDaily()).toBe(config.bytesLimit);
   });
 });
 
-describe(`Making a bad request with ${config.dataLimit}b data response`, () => {
+describe('Resetting proxy', () => {
+  test('Bytes consumed is 0b', async () => {
+    await proxy.reset();
+    expect(proxy.getBytesConsumed()).toBe(0);
+  });
+  test('Bytes monthly is 0b', async () => {
+    expect(await proxy.getBytesMonthly()).toBe(0);
+  });
+  test('Bytes daily is 0b', async () => {
+    expect(await proxy.getBytesDaily()).toBe(0);
+  });
+});
+
+describe(`Making a bad request with a ${config.bytesLimit}b response`, () => {
   test('Response status is 400', async () => {
-    response = await server.get(`?bytes=${config.dataLimit}&status=400`);
+    response = await server.get(`?bytes=${config.bytesLimit}&status=400`);
     expect(response.status).toBe(400);
   });
-  test('Data consumed is 0b', async () => {
-    expect(proxy.getDataConsumed()).toBe(0);
-  });
-  test('Data pending is 0b', async () => {
-    expect(proxy.getDataPending()).toBe(0);
+  test('Bytes pending is 0b', async () => {
+    expect(proxy.getBytesPending()).toBe(0);
   });
 });
 
-describe(`Making a request when ${config.dataLimit}b data limit is reached`, () => {
+describe('Making a request when data limit is reached', () => {
   test('Response status is 403', async () => {
-    await server.get(`?bytes=${config.dataLimit}`);
+    await server.get(`?bytes=${config.bytesLimit}`);
     await proxy.sync();
     response = await server.get('');
     expect(response.status).toBe(403);
@@ -68,13 +82,10 @@ describe(`Making a request when ${config.dataLimit}b data limit is reached`, () 
   test('Response type is text/plain', async () => {
     expect(response.type).toBe('text/plain');
   });
-  test('Response text is Data Limit Reached', async () => {
+  test('Response text is "Data Limit Reached"', async () => {
     expect(response.text).toBe('Data Limit Reached');
   });
-  test(`Data consumed is ${config.dataLimit}b`, async () => {
-    expect(proxy.getDataConsumed()).toBe(config.dataLimit);
-  });
-  test('Data pending is 0b', async () => {
-    expect(proxy.getDataPending()).toBe(0);
+  test('Bytes pending is 0b', async () => {
+    expect(proxy.getBytesPending()).toBe(0);
   });
 });

@@ -3,13 +3,13 @@ version: '3.8'
 services:
   proxy:
     image: node:18.4-slim
-    working_dir: /home/node/varsome-proxy
+    working_dir: /home/node/proxy
     user: node
     command: tail -f /dev/null
     ports:
       - ${PROXY_PORT}:3000
     volumes:
-      - ..:/home/node/varsome-proxy
+      - ..:/home/node/proxy
 
   postgres:
     image: postgres:14.5-alpine

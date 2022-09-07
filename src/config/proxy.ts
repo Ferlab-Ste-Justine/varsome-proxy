@@ -13,14 +13,14 @@ const config = node.env === Env.test
     targetHost: 'localhost',
     targetPort: 3003,
     targetHttps: false,
-    dataLimit: parseBytes('100b'),
+    bytesLimit: parseBytes('50b'),
     syncInterval: parseMillis('10s'),
   } : {
     port: Number(process.env.PROXY_PORT),
     targetHost: String(process.env.PROXY_TARGET_HOST),
     targetPort: Number(process.env.PROXY_TARGET_PORT),
     targetHttps: Boolean(Number(process.env.PROXY_TARGET_HTTPS)),
-    dataLimit: parseBytes(String(process.env.PROXY_DATA_LIMIT)),
+    bytesLimit: parseBytes(String(process.env.PROXY_DATA_LIMIT)),
     syncInterval: Math.max(parseMillis(String(process.env.PROXY_SYNC_INTERVAL)), 1000),
   };
 
