@@ -1,16 +1,17 @@
-import { formatBytes } from 'utils';
+import { formatBytes, isoDay, isoMonth } from 'utils';
 import config, { serverOptions } from 'config/proxy';
+import daily from 'model/daily';
 import http from 'http';
 import httpProxy, { ProxyReqCallback, ProxyResCallback } from 'http-proxy';
-import model from 'model/proxy';
+import monthly from 'model/monthly';
 import node from 'config/node';
 
-let dataConsumed = 0;
-let dataPending = 0;
+let bytesConsumed = 0;
+let bytesPending = 0;
 let syncTimeout: NodeJS.Timeout | undefined;
 
 const onProxyReq: ProxyReqCallback = (proxyReq, req, res) => {
-  if (dataConsumed + dataPending >= config.dataLimit) {
+  if (bytesConsumed + bytesPending >= config.bytesLimit) {
     res.writeHead(403, { 'content-type': 'text/plain' });
     res.end('Data Limit Reached');
   }
@@ -19,7 +20,7 @@ const onProxyReq: ProxyReqCallback = (proxyReq, req, res) => {
 const onProxyRes: ProxyResCallback = (proxyRes, req, res) => {
   if (proxyRes.statusCode === 200 && res.statusCode === 200) {
     proxyRes.on('data', (chunk) => {
-      dataPending += Buffer.byteLength(chunk);
+      bytesPending += Buffer.byteLength(chunk);
     });
   }
   process.stdout.write(`Proxy request status=${res.statusCode} url=${req.url}\n`);
@@ -33,24 +34,30 @@ const server = http.createServer((req, res) => {
   proxy.web(req, res, serverOptions);
 });
 
-const reset = async () => {
-  await model.resetDataConsumed();
-  process.stdout.write('Proxy reset\n');
-  dataConsumed = 0;
-};
-
 const sync = async () => {
-  if (dataPending > 0) {
-    await model.incrementDataConsumed(dataPending);
+  if (bytesPending > 0) {
+    await Promise.all([
+      monthly.incrementBytes(isoMonth(), bytesPending),
+      daily.incrementBytes(isoDay(), bytesPending),
+    ]);
   }
-  dataConsumed = await model.getDataConsumed();
-  process.stdout.write(`Proxy synced pending=${formatBytes(dataPending)} consumed=${formatBytes(dataConsumed)}\n`);
-  dataPending = 0;
+  bytesConsumed = await monthly.getBytes(isoMonth());
+  process.stdout.write(`Proxy synced pending=${formatBytes(bytesPending)} consumed=${formatBytes(bytesConsumed)}\n`);
+  bytesPending = 0;
 };
 
 const syncInterval = async () => {
   await sync();
   syncTimeout = setTimeout(syncInterval, config.syncInterval);
+};
+
+const reset = async () => {
+  await Promise.all([
+    monthly.resetBytes(),
+    daily.resetBytes(),
+  ]);
+  process.stdout.write('Proxy reset\n');
+  bytesConsumed = 0;
 };
 
 const start = async () => {
@@ -65,9 +72,20 @@ const stop = () => {
   server.close();
 };
 
-const getDataConsumed = () => dataConsumed;
-const getDataPending = () => dataPending;
+const getBytesConsumed = () => bytesConsumed;
+const getBytesPending = () => bytesPending;
+
+const getBytesMonthly = () => monthly.getBytes(isoMonth());
+const getBytesDaily = () => daily.getBytes(isoDay());
 
 export default {
-  server, reset, sync, start, stop, getDataConsumed, getDataPending,
+  server,
+  sync,
+  reset,
+  start,
+  stop,
+  getBytesConsumed,
+  getBytesPending,
+  getBytesMonthly,
+  getBytesDaily,
 };
