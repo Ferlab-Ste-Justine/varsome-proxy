@@ -1,0 +1,20 @@
+name: Publish with semver tag
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  push:
+    name: Publish image using semver tag
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and push image to registry
+        uses: Ferlab-Ste-Justine/action-push-image@v2
+        with:
+          username: ${{ secrets.FERLAB_DOCKER_HUB_USER }}
+          password: ${{ secrets.FERLAB_DOCKER_HUB_TOKEN }}
+          image: ferlabcrsj/varsome-proxy
+          tag_format: "{semver}"
