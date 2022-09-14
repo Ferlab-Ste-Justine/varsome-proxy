@@ -20,7 +20,7 @@ export default config.env === Env.test
       password: String(process.env.DATABASE_PASSWORD),
       database: String(process.env.DATABASE_NAME),
       ssl: Number(process.env.DATABASE_TLS)
-        ? { rejectUnauthorized: Boolean(Number(process.env.DATABASE_TLS_VERIFY_CERT)) }
+        ? { rejectUnauthorized: Boolean(Number(process.env.DATABASE_TLS_CERT_VERIFY)) }
         : undefined,
     },
     pool: { min: 2, max: 10 },
