@@ -33,7 +33,7 @@ const [action, name] = process.argv.slice(2);
         process.stdout.write(`- ${path.parse(file).name}\n`);
       });
     } else {
-      process.stdout.write('Nothing to do\n');
+      process.stdout.write('Migration : nothing to do\n');
     }
   } else {
     switch (action) {
