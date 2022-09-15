@@ -20,18 +20,14 @@ export default config.env === Env.test
       password: String(process.env.DATABASE_PASSWORD),
       database: String(process.env.DATABASE_NAME),
       ssl: Number(process.env.DATABASE_TLS)
-        ? { rejectUnauthorized: Boolean(Number(process.env.DATABASE_TLS_VERIFY_CERT)) }
+        ? { rejectUnauthorized: Boolean(Number(process.env.DATABASE_TLS_CERT_VERIFY)) }
         : undefined,
     },
     pool: { min: 2, max: 10 },
   };
 
-export const table = String(process.env.DATABASE_TABLE);
-
-export const tableName = (name: string) => `${table}_${name}`;
-
 export const migrationConfig = {
-  tableName: `${tableName('migration')}`,
+  tableName: 'migration',
   directory: `${config.path}/migration`,
   extension: config.ext,
   stub: 'migration.stub',

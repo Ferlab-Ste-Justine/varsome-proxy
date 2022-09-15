@@ -27,7 +27,7 @@ npm run migration
 Start proxy :
 
 ```
-npm run start
+npm start
 ```
 
 Request proxy :
@@ -59,5 +59,5 @@ npm run test
 Run tests with coverage :
 
 ```
-npm run test:cov
+npm run test:coverage
 ```

@@ -1,13 +1,13 @@
 {
   "name": "varsome-proxy",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "start": "ts-node-dev -r tsconfig-paths/register src",
     "lint": "eslint src --ext .ts --fix",
     "lint:ci": "eslint src --ext .ts",
     "test": "jest --verbose",
-    "test:cov": "jest --verbose --coverage",
+    "test:coverage": "jest --verbose --coverage",
     "test:ci": "jest",
     "migration": "ts-node -r tsconfig-paths/register src/cmd/migration latest",
     "migration:up": "ts-node -r tsconfig-paths/register src/cmd/migration up",
