@@ -11,6 +11,10 @@ let bytesPending = 0;
 let syncTimeout: NodeJS.Timeout | undefined;
 
 const onProxyReq: ProxyReqCallback = (proxyReq, req, res) => {
+  res.setHeader('proxy-data-limit', formatBytes(config.bytesLimit));
+  res.setHeader('proxy-data-consumed', formatBytes(bytesConsumed + bytesPending));
+  res.setHeader('proxy-bytes-limit', config.bytesLimit);
+  res.setHeader('proxy-bytes-consumed', bytesConsumed + bytesPending);
   if (bytesConsumed + bytesPending >= config.bytesLimit) {
     res.writeHead(403, { 'content-type': 'text/plain' });
     res.end('Data Limit Reached');
