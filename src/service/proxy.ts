@@ -27,7 +27,7 @@ const onProxyRes: ProxyResCallback = (proxyRes, req, res) => {
       bytesPending += Buffer.byteLength(chunk);
     });
   }
-  process.stdout.write(`Proxy request status=${res.statusCode} url=${req.url}\n`);
+  process.stdout.write(`Proxy request url=${req.url} status=${res.statusCode}\n`);
 };
 
 const proxy = httpProxy.createProxy()
@@ -39,7 +39,7 @@ const server = http.createServer((req, res) => {
 });
 
 const sync = async () => {
-  if (bytesPending > 0) {
+  if (bytesPending) {
     await Promise.all([
       monthly.incrementBytes(isoMonth(), bytesPending),
       daily.incrementBytes(isoDay(), bytesPending),
@@ -60,8 +60,8 @@ const reset = async () => {
     monthly.resetBytes(),
     daily.resetBytes(),
   ]);
-  process.stdout.write('Proxy reset\n');
   bytesConsumed = 0;
+  process.stdout.write('Proxy reset\n');
 };
 
 const start = async () => {
@@ -72,7 +72,6 @@ const start = async () => {
 
 const stop = () => {
   clearTimeout(syncTimeout);
-  server.removeAllListeners();
   server.close();
 };
 
