@@ -24,7 +24,7 @@ afterAll(async () => {
 
 describe(`Making a request with a ${config.bytesLimit}b response`, () => {
   test('Response status is 200', async () => {
-    response = await server.get(`?bytes=${config.bytesLimit}`);
+    response = await server.get(`?bytes=${config.bytesLimit}`).set('Authorization', 'token');
     expect(response.status).toBe(200);
   });
   test('Bytes consumed is 0b', async () => {
@@ -64,7 +64,7 @@ describe('Resetting proxy', () => {
 
 describe(`Making a bad request with a ${config.bytesLimit}b response`, () => {
   test('Response status is 400', async () => {
-    response = await server.get(`?bytes=${config.bytesLimit}&status=400`);
+    response = await server.get(`?bytes=${config.bytesLimit}&status=400`).set('Authorization', 'token');
     expect(response.status).toBe(400);
   });
   test('Bytes pending is 0b', async () => {
@@ -74,9 +74,9 @@ describe(`Making a bad request with a ${config.bytesLimit}b response`, () => {
 
 describe('Making a request when data limit is reached', () => {
   test('Response status is 403', async () => {
-    await server.get(`?bytes=${config.bytesLimit}`);
+    await server.get(`?bytes=${config.bytesLimit}`).set('Authorization', 'token');
     await proxy.sync();
-    response = await server.get('');
+    response = await server.get('').set('Authorization', 'token');
     expect(response.status).toBe(403);
   });
   test('Response type is text/plain', async () => {
