@@ -46,7 +46,6 @@ const sync = async () => {
     ]);
   }
   bytesConsumed = await monthly.getBytes(isoMonth());
-  process.stdout.write(`Proxy synced pending=${formatBytes(bytesPending)} consumed=${formatBytes(bytesConsumed)}\n`);
   bytesPending = 0;
 };
 
