@@ -15,14 +15,21 @@ const onProxyReq: ProxyReqCallback = (proxyReq, req, res) => {
   res.setHeader('proxy-data-consumed', formatBytes(bytesConsumed + bytesPending));
   res.setHeader('proxy-bytes-limit', config.bytesLimit);
   res.setHeader('proxy-bytes-consumed', bytesConsumed + bytesPending);
-  if (bytesConsumed + bytesPending >= config.bytesLimit) {
+  if (
+    req.headers.authorization
+    && bytesConsumed + bytesPending >= config.bytesLimit
+  ) {
     res.writeHead(403, { 'content-type': 'text/plain' });
     res.end('Data Limit Reached');
   }
 };
 
 const onProxyRes: ProxyResCallback = (proxyRes, req, res) => {
-  if (proxyRes.statusCode === 200 && res.statusCode === 200) {
+  if (
+    req.headers.authorization
+    && proxyRes.statusCode === 200
+    && res.statusCode === 200
+  ) {
     proxyRes.on('data', (chunk) => {
       bytesPending += Buffer.byteLength(chunk);
     });
@@ -46,7 +53,6 @@ const sync = async () => {
     ]);
   }
   bytesConsumed = await monthly.getBytes(isoMonth());
-  process.stdout.write(`Proxy synced pending=${formatBytes(bytesPending)} consumed=${formatBytes(bytesConsumed)}\n`);
   bytesPending = 0;
 };
 

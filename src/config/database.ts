@@ -14,13 +14,13 @@ export default config.env === Env.test
   : {
     client: 'pg',
     connection: {
-      host: String(process.env.DATABASE_HOST),
-      port: Number(process.env.DATABASE_PORT),
-      user: String(process.env.DATABASE_USER),
-      password: String(process.env.DATABASE_PASSWORD),
-      database: String(process.env.DATABASE_NAME),
-      ssl: Number(process.env.DATABASE_TLS)
-        ? { rejectUnauthorized: Boolean(Number(process.env.DATABASE_TLS_CERT_VERIFY)) }
+      host: String(process.env.PGHOST),
+      port: Number(process.env.PGPORT),
+      user: String(process.env.PGUSER),
+      password: String(process.env.PGPASSWORD),
+      database: String(process.env.PGDATABASE),
+      ssl: Number(process.env.PGREQUIRESSL)
+        ? { rejectUnauthorized: Boolean(Number(process.env.PGSSLVERIFY)) }
         : undefined,
     },
     pool: { min: 2, max: 10 },
